@@ -1,0 +1,313 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Allgemeine Stile & Variablen */
+:root {
+    --primary-color: #1a73e8;
+    --primary-color-dark: #155bb5;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --background-color: #f0f2f5;
+    --card-background: #fff;
+    --text-color: #333;
+    --link-color: #1a73e8;
+    --border-color: #eee;
+    --soft-red-background: #f9d8d8;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: var(--card-background);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeIn 1s ease-in-out;
+}
+
+h1, h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    font-weight: 600;
+}
+
+/* Formular-Stile */
+form {
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="file"],
+select {
+    width: calc(100% - 20px);
+    padding: 12px 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="file"]:focus,
+select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+    outline: none;
+}
+
+input[type="submit"] {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 30px 0;
+}
+
+a {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--text-color);
+}
+
+/* Dropdown */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dropbtn:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--card-background);
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+    z-index: 1;
+    right: 0;
+    border-radius: 8px;
+    padding: 10px 0;
+    margin-top: 5px;
+    animation: slideInFromTop 0.3s ease-out;
+}
+
+.dropdown-content a {
+    color: var(--text-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: 400;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--background-color);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Schülerübersicht Grid */
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.student-card {
+    background-color: var(--card-background);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #e9ecef;
+    
+}
+
+
+.student-card-test {
+    background-color: rgba(255, 165, 0, 0.15); 
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signal-strength {
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-top: 10px;
+    color: #D35400;
+}
+
+.student-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.student-card-test:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.student-card.present {
+    border: 2px solid var(--success-color);
+}
+
+.student-card.absent {
+    border: 2px solid var(--danger-color);
+}
+
+.student-photo {
+    width: 100px;
+    height: 100px;
+    background-color: #e9ecef;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    border: 3px solid var(--card-background);
+}
+
+.student-name {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.status-text {
+    font-weight: 600;
+    margin: 0;
+}
+
+.status-text.present {
+    color: var(--success-color);
+}
+
+.status-text.absent {
+    color: var(--danger-color);
+}
+
+.delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ccc;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: color 0.3s ease;
+}
+
+.delete-btn:hover {
+    color: var(--danger-color);
+    transform: scale(1.1);
+}
+
+/* Error Messages */
+.error {
+    color: var(--danger-color);
+    background-color: #f9e2e1;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Animationen */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInFromTop {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
+}

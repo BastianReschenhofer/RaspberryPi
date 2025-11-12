@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schülerübersicht</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .action-button {
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+        }
+
+        .action-button:hover {
+            background-color: #1f86cb;
+            transform: translateY(-2px);
+        }
+
+        .testButton {
+            padding: 15px 30px;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            background-color: #E74C3C;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+        }
+
+        .testButton:hover {
+            background-color: #FF8C00;
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .testButton:active {
+            background-color: #D35400;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(0);
+        }
+
+        .signal-strength {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-top: 10px;
+            color: #D35400; /* Orange-Ton für die Hervorhebung */
+        }
+
+    
+    </style>
+</head>
+
+<body class="test-mode-page">
+    <div class="page-container">
+        <div class="header" style="justify-content: center; text-align: center;">
+            <h1 style="width: 100%;">Modus: Test</h1>
+        </div>
+
+        <div class="button-group">
+            <a href="{{ url_for('home.home') }}" class="action-button">Testmodus verlassen</a>
+        </div>
+
+
+        <div class="student-grid">
+            {% for student_item in students if student_item.present %}
+
+            <div class="student-card-test present">
+                <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">
+                    &times;
+                </a>
+                <div class="student-photo">
+                    </div>
+                <p class="student-name">{{ student_item.full_name }}</p>
+                
+                <p class="signal-strength">Signal: {{ student_item.signal_strength }} dBm</p> </div>
+
+            {% endfor %}
+        </div>
+    </div>
+    
+</body>
+</html>

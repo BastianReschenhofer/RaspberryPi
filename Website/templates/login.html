@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form action="{{ url_for('auth.login') }}" method="post">
+            <label for="username">Benutzername:</label>
+            <input type="text" id="username" name="nm" required>
+            
+            <label for="password">Passwort:</label>
+            <input type="password" id="password" name="pw" required>
+            
+            <input type="submit" value="Anmelden">
+        </form>
+    </div>
+</body>
+</html>
