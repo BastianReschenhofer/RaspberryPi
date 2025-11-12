@@ -9,7 +9,7 @@ DB_CONFIG = {
     'database': "students_db"
 }
 
-DELETE_SQL = "DELETE FROM studend_timeline"
+DELETE_SQL = "DELETE FROM student_timeline"
 
 def delete_timeline_table():
     conn = None

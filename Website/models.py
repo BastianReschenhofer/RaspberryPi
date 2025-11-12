@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 
 class Student(db.Model):
 
-    __tablename__ = 'compare_stundent' 
+    __tablename__ = 'compare_student' 
     
 
     id = db.Column('id_student', db.Integer, primary_key=True)
@@ -29,11 +29,11 @@ class Student(db.Model):
 
 
 class Timeline(db.Model):
-    __tablename__ = "studend_timeline"
+    __tablename__ = "student_timeline"
 
     id = db.Column(db.Integer, primary_key = True)
 
-    id_student = db.Column(db.Integer, db.ForeignKey('compare_stundent.id_student'), nullable = False)
+    id_student = db.Column(db.Integer, db.ForeignKey('compare_student.id_student'), nullable = False)
 
     rssi_dbm = db.Column(db.Integer, nullable = False)
     timestamp = db.Column(db.DateTime, default=func.now())
