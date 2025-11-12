@@ -242,11 +242,19 @@ a:hover {
     width: 100px;
     height: 100px;
     background-color: #e9ecef;
-    margin: 0 auto 15px;
+    margin: 0 auto 1px;
     border-radius: 50%;
     overflow: hidden;
     position: relative;
     border: 3px solid var(--card-background);
+}
+.student-photo img {
+    width: 100%;
+    height: 100%;
+    margin-top: 0 auto 1px;
+    object-fit: cover; 
+    border-radius: 50%; 
+    display: block; 
 }
 
 .student-name {

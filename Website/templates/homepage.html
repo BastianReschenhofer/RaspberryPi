@@ -91,7 +91,9 @@
                     &times;
                 </a>
                 <div class="student-photo">
-                    </div>
+                    <img src="{{ student_item.image_url }}" 
+                    alt="Foto von {{ student_item.full_name }}">
+                </div>
                 <p class="student-name">{{ student_item.full_name }}</p>
                 {% if student_item.present %}
                     <p class="status-text present">Anwesend</p>

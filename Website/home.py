@@ -6,7 +6,7 @@ import csv
 import io
 from sqlalchemy import distinct
 from datetime import datetime, timedelta
-
+import os
 
 home_bp = Blueprint('home', __name__)
 
@@ -81,7 +81,7 @@ def delete_student(student_id):
     return redirect(url_for('home.home'))
 
 
-################################################################################################
+######################################Basti Workspace##########################################################
 
 
 @home_bp.route('/testpage', methods=['POST', 'GET']) 
@@ -107,6 +107,8 @@ def testdata():
 
 
 def markStudents(is_testpage=False): 
+
+    from flask import current_app
 
     pastdatetime = datetime.now()- timedelta(minutes=1)
 
@@ -152,6 +154,20 @@ def markStudents(is_testpage=False):
             student.present = False
             if is_testpage:
                 student.signal_strength = 'N/A' 
-    
+        
+        base_filename = student.full_name.lower() + '.jpg' 
+        
+
+        
+        image_path = os.path.join(current_app.root_path, 'static', 'images', base_filename)
+        
+        if os.path.exists(image_path):
+            student.image_url = url_for('static', filename=f'images/{base_filename}')
+        else:
+
+            student.image_url = url_for('static', filename='images/placeholder.jpg') 
+            
     return students
+
+
 
