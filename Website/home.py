@@ -8,6 +8,7 @@ from sqlalchemy import distinct
 from datetime import datetime, timedelta
 import os
 
+
 home_bp = Blueprint('home', __name__)
 
 @home_bp.route('/')
@@ -110,6 +111,7 @@ def testdata():
 
 
 
+"""
 def markStudents(is_testpage=False): 
 
     from flask import current_app
@@ -173,5 +175,33 @@ def markStudents(is_testpage=False):
             
     return students
 
+"""
+from datetime import datetime, timedelta
 
+def markStudents(is_testpage=False): 
+    limit_now = datetime.now() - timedelta(minutes=1) 
+    
+    present_ids = [r.id_student for r in db.session.query(Timeline.id_student)
+                   .filter(Timeline.timestamp >= limit_now).distinct()]
 
+    students = Student.query.all()
+
+    for student in students:
+        student.present = (student.id in present_ids)
+        if is_testpage:
+            last_entries = db.session.query(Timeline.rssi_dbm)\
+                .filter(Timeline.id_student == student.id)\
+                .order_by(Timeline.timestamp.desc())\
+                .limit(30)\
+                .all()
+            if last_entries:
+                student.signal_strength = str(last_entries[0].rssi_dbm)
+                raw_values = [e.rssi_dbm for e in last_entries]
+                student.signal_history = raw_values[::-1] # Liste umdrehen
+            else:
+                student.signal_strength = 'N/A'
+                student.signal_history = []
+        else:
+            student.signal_strength = 'N/A'
+
+    return students
