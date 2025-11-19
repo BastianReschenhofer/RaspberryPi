@@ -90,8 +90,11 @@
                 <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">
                     &times;
                 </a>
-                <div class="student-photo">
-                    </div>
+                <div class="student-photo"> 
+                    <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 
+                         onerror="this.onerror=null; this.src='https://api.dicebear.com/9.x/initials/svg?seed={{ student_item.full_name }}';"
+                         alt="Foto von {{ student_item.full_name }}">
+                </div>
                 <p class="student-name">{{ student_item.full_name }}</p>
                 {% if student_item.present %}
                     <p class="status-text present">Anwesend</p>
