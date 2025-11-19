@@ -87,6 +87,10 @@ def delete_student(student_id):
 @home_bp.route('/testpage', methods=['POST', 'GET']) 
 def testpage():
         return render_template('testpage.html', students=markStudents(is_testpage=True)) 
+
+@home_bp.route('/timeline', methods=['POST', 'GET']) 
+def timeline():
+        return render_template('timeline.html', students=markStudents(is_testpage=True)) 
     
 @home_bp.route('/testdata')
 def testdata():
