@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Einfaches Styling für die Buttons */
         .button-group {
             display: flex;
             gap: 15px;
@@ -24,7 +23,6 @@
             border-radius: 8px;
         }
 
-        /* Styling für die Karte */
         .student-card-test {
             padding: 20px;
             background: #fff;
@@ -41,13 +39,26 @@
             position: absolute;
             top: 10px; right: 10px;
             text-decoration: none; color: #aaa; font-size: 20px;
+            z-index: 10;
         }
 
+        /* Styling für runde Bilder */
         .student-photo {
-            width: 50px; height: 50px; 
-            background-color: #ddd; 
-            border-radius: 50%; 
-            margin-bottom: 10px;
+            width: 100px;
+            height: 100px;
+            background-color: #ffffff;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            border: 3px solid #eee; 
+        }
+
+        .student-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .signal-strength {
@@ -80,7 +91,12 @@
             <div class="student-card-test">
                 <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">&times;</a>
                 
-                <div class="student-photo"></div>
+                <div class="student-photo"> 
+                    <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 
+                         onerror="this.onerror=null; this.src='https://api.dicebear.com/9.x/initials/svg?seed={{ student_item.full_name }}';"
+                         alt="Foto von {{ student_item.full_name }}">
+                </div>
+
                 <p class="student-name">{{ student_item.full_name }}</p>
                 <p class="signal-strength">Aktuell: {{ student_item.signal_strength }} dBm</p>
                 
@@ -100,7 +116,6 @@
         const allCharts = document.querySelectorAll('.timeline-canvas');
 
         allCharts.forEach(canvas => {
-            
             const rawData = canvas.dataset.values; 
             const dataPoints = rawData ? JSON.parse(rawData) : [];
 
@@ -110,7 +125,7 @@
                     labels: dataPoints.map((_, i) => i + 1),
                     datasets: [{
                         data: dataPoints,
-                        borderColor: '#1a73e8',     
+                        borderColor: '#1a73e8',    
                         borderWidth: 2,
                         pointRadius: 1,                        
                         tension: 0.5            
