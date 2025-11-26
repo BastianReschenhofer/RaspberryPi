@@ -194,6 +194,12 @@ a:hover {
     gap: 30px;
 }
 
+.timeline-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(800px, 1fr));
+    gap: 30px;
+}
+
 .student-card {
     background-color: var(--card-background);
     border-radius: 15px;
