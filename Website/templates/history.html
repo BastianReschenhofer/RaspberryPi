@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schülerübersicht</title>
+    <title>Schülerübersicht - Zeitverlauf</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
 
         .test-mode-page {
@@ -72,15 +73,14 @@
         </div>
         
         <div class="button-group">
-            <a href="{{ url_for('home.add_student') }}" class="action-button">Einzelnen Schüler hinzufügen</a>
-            <a href="{{ url_for('home.add_student') }}?csv_upload=true" class="action-button">Schüler aus CSV importieren</a>
-            <a href="{{ url_for('home.testpage') }}" class="testButton">TestModus</a>
-            <a href="{{ url_for('home.history') }}" class="action-button">Anwesenheits Verlauf</a>
+
+            <a href="{{ url_for('home.home') }}" class="action-button">Zurück zu Übersicht</a>
+            
         </div>
 
         
         
-        <div class="student-grid">
+        <div class="timeline-grid">
             {% for student_item in students %}
             
             {% if student_item.present %}
@@ -91,11 +91,19 @@
                 <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">
                     &times;
                 </a>
-                <div class="student-photo">
-                    <img src="{{ student_item.image_url }}" 
-                    alt="Foto von {{ student_item.full_name }}">
-                </div>
+                <div class="student-photo"> 
+                    <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 
+                         onerror="this.onerror=null; this.src='https://api.dicebear.com/9.x/initials/svg?seed={{ student_item.full_name }}';"
+                         alt="Foto von {{ student_item.full_name }}">
+                </div>
                 <p class="student-name">{{ student_item.full_name }}</p>
+                <div class="chart-wrapper">
+                    <canvas 
+                        class="timeline-canvas" 
+                        data-values='{{ student_item.signal_history | tojson }}'
+                        data-labels='{{ student_item.time_labels | tojson }}'> 
+                    </canvas>
+                </div>
                 {% if student_item.present %}
                     <p class="status-text present">Anwesend</p>
                 {% else %}
@@ -103,8 +111,53 @@
                 {% endif %}
             </div>
             
+            
             {% endfor %}
         </div>
     </div>
+     <script>
+
+    const allCharts = document.querySelectorAll('.timeline-canvas');
+
+    allCharts.forEach(canvas => {
+        
+        const rawData = canvas.dataset.values; 
+        const dataPoints = rawData ? JSON.parse(rawData) : [];
+
+        const rawLabels = canvas.dataset.labels;
+        const timeLabels = rawLabels ? JSON.parse(rawLabels) : [];
+
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: timeLabels, 
+                datasets: [{
+                    data: dataPoints,
+                    borderColor: '#1a73e8',    
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.1          
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false} },
+                scales: {
+                    x: { 
+                        display: true,
+                        
+                        ticks: {
+                            maxTicksLimit: 12, 
+                            maxRotation: 0,
+                            autoSkip: true
+                        }
+                    }, 
+                    y: { display: true, min: -100, max: -30 }   
+                }
+            }
+        });
+    });
+</script>
 </body>
 </html>

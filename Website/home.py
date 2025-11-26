@@ -92,10 +92,6 @@ def testpage():
 @home_bp.route('/timeline', methods=['POST', 'GET']) 
 def timeline():
         return render_template('timeline.html', students=markStudents(is_testpage=True)) 
-    
-@home_bp.route('/testdata')
-def testdata():
-    students = markStudents(is_testpage=True)
 
     student_data = []
     for student in students:
@@ -125,28 +121,6 @@ def markStudents(is_testpage=False):
     present_student_ids = [id_tuple[0] for id_tuple in present_student_ids]
 
     
-    students = Student.query.all()
-    
-    latest_rssi = {}
-    if is_testpage:
-        
-        subquery = db.session.query(
-            Timeline.id_student, 
-            db.func.max(Timeline.timestamp).label('max_timestamp')
-        ).filter(
-            Timeline.id_student.in_(present_student_ids) 
-        ).group_by(Timeline.id_student).subquery()
-
-        latest_entries = db.session.query(
-            Timeline.id_student, 
-            Timeline.rssi_dbm
-        ).join(
-            subquery,
-            (Timeline.id_student == subquery.c.id_student) & 
-            (Timeline.timestamp == subquery.c.max_timestamp)
-        ).all()
-        
-        latest_rssi = {entry[0]: str(entry[1]) for entry in latest_entries}
 
 
     for student in students:
@@ -175,7 +149,6 @@ def markStudents(is_testpage=False):
             
     return students
 
-"""
 from datetime import datetime, timedelta
 
 def markStudents(is_testpage=False): 
@@ -221,5 +194,60 @@ def markStudents(is_testpage=False):
                 student.signal_history = []
         else:
             student.signal_strength = 'N/A'
+
+    return students
+
+
+
+def timeline_data():
+    now = datetime.now()
+    limit_history = now - timedelta(hours=6)
+    limit_present = now - timedelta(minutes=1)
+
+    present_ids = [r.id_student for r in db.session.query(Timeline.id_student)
+                   .filter(Timeline.timestamp >= limit_present).distinct()]
+
+    students = Student.query.all()
+
+    for student in students:
+        student.present = (student.id in present_ids)
+        
+        history_entries = db.session.query(Timeline.rssi_dbm, Timeline.timestamp)\
+            .filter(Timeline.id_student == student.id)\
+            .filter(Timeline.timestamp >= limit_history)\
+            .order_by(Timeline.timestamp.asc())\
+            .all()
+
+        values_minute = defaultdict(list)
+        for entry in history_entries:
+            minute_n = entry.timestamp.replace(second=0, microsecond=0)
+            values_minute[minute_n].append(entry.rssi_dbm)
+
+        if history_entries:
+            student.signal_strength = str(history_entries[-1].rssi_dbm)
+        else:
+            student.signal_strength = 'N/A'
+
+        current_pointer = limit_history.replace(second=0, microsecond=0)
+        end_pointer = now.replace(second=0, microsecond=0)
+        
+        temp_history = []
+        temp_labels = []
+        
+        while current_pointer <= end_pointer:
+            
+            time_str = current_pointer.strftime("%H:%M")
+            temp_labels.append(time_str)
+
+            if current_pointer in values_minute:
+                val = statistics.median(values_minute[current_pointer])
+                temp_history.append(val)
+            else:
+                temp_history.append(-100)
+            
+            current_pointer += timedelta(minutes=1)
+        
+        student.signal_history = temp_history
+        student.time_labels = temp_labels
 
     return students
