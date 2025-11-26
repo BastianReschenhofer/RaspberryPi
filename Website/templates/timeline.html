@@ -128,7 +128,7 @@
                         borderColor: '#1a73e8',    
                         borderWidth: 2,
                         pointRadius: 1,                        
-                        tension: 0.5            
+                        tension: 1           
                     }]
                 },
                 options: {
@@ -137,7 +137,7 @@
                     plugins: { legend: { display: false} },
                     scales: {
                         x: { display: false }, 
-                        y: { display: true }   
+                        y: { display: true, min: -100, max: -30 }   
                     }
                 }
             });

@@ -189,15 +189,23 @@ def markStudents(is_testpage=False):
     for student in students:
         student.present = (student.id in present_ids)
         if is_testpage:
-            last_entries = db.session.query(Timeline.rssi_dbm)\
+            last_entries = db.session.query(Timeline.rssi_dbm, Timeline.timestamp)\
                 .filter(Timeline.id_student == student.id)\
                 .order_by(Timeline.timestamp.desc())\
-                .limit(30)\
+                .limit(500)\
                 .all()
             if last_entries:
                 student.signal_strength = str(last_entries[0].rssi_dbm)
-                raw_values = [e.rssi_dbm for e in last_entries]
-                student.signal_history = raw_values[::-1] # Liste umdrehen
+
+                values_minute = defaultdict(list)
+                for entry in last_entries:
+                    minute_n = entry.timestamp.replace(second = 0, microsecond = 0)
+                    values_minute[minute_n].append(entry.rssi_dbm)
+                sort_minutes = sorted(values_minute.keys())
+
+                student.signal_history = [
+                statistics.median(values_minute[t]) for t in sort_minutes
+            ]
             else:
                 student.signal_strength = 'N/A'
                 student.signal_history = []
