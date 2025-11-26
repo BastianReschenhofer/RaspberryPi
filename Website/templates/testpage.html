@@ -87,7 +87,7 @@
         <div class="student-grid">
             {% for student_item in students if student_item.present %}
 
-            <div class="student-card-test present">
+            <div class="student-card-test present {{ student_item.signal_class }}">
                 <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">
                     &times;
                 </a>
@@ -98,7 +98,8 @@
                 </div>
                 <p class="student-name">{{ student_item.full_name }}</p>
                 
-                <p class="signal-strength">Signal: {{ student_item.signal_strength }} dBm</p> </div>
+                <p class="signal-strength">Signal: {{ student_item.signal_strength }} dBm</p> 
+            </div>
 
             {% endfor %}
         </div>
