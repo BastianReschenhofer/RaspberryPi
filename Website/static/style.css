@@ -12,6 +12,10 @@
     --link-color: #1a73e8;
     --border-color: #eee;
     --soft-red-background: #f9d8d8;
+
+    --range1-color: #28a745;
+    --range2-color: #ffa500;
+    --range3-color: #dc3545;
 }
 
 body {
@@ -236,6 +240,17 @@ a:hover {
 
 .student-card.absent {
     border: 2px solid var(--danger-color);
+}
+
+/* Signal bereich stärke*/
+.student-card-test.range1 {
+    border: 4px solid var(--range1-color);
+}
+.student-card-test.range2 {
+    border: 4px solid var(--range2-color);
+}
+.student-card-test.range3 {
+    border: 4px solid var(--range3-color);
 }
 
 .student-photo {

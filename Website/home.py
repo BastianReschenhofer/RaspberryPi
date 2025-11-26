@@ -203,9 +203,19 @@ def markStudents(is_testpage=False):
                     values_minute[minute_n].append(entry.rssi_dbm)
                 sort_minutes = sorted(values_minute.keys())
 
-                student.signal_history = [
-                statistics.median(values_minute[t]) for t in sort_minutes
-            ]
+                student.signal_history = [statistics.median(values_minute[t]) for t in sort_minutes]
+
+                try: 
+                    rssi_val = int(float(student.signal_strength))
+                    if rssi_val >= -55:
+                        student.signal_class = 'range1'
+                    elif rssi_val >= -65:
+                        student.signal_class = 'range2'
+                    else:
+                        student.signal_class = 'range3'
+                except:
+                    student.signal_class = ' '
+
             else:
                 student.signal_strength = 'N/A'
                 student.signal_history = []
