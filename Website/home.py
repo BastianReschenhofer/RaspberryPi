@@ -97,7 +97,11 @@ def timeline():
 
 @home_bp.route('/history', methods=['POST', 'GET']) 
 def history():
-        return render_template('history.html', students=timeline_data()) 
+        try:
+            hours = int(request.args.get('hours',12))
+        except ValueError:
+            hours = 12
+        return render_template('history.html', students=timeline_data(hours)) 
 
     
 
@@ -153,9 +157,9 @@ def markStudents(is_testpage=False):
 
 
 
-def timeline_data():
+def timeline_data(hours=12):
     now = datetime.now()
-    limit_history = now - timedelta(hours=6)
+    limit_history = now - timedelta(hours=hours)
     limit_present = now - timedelta(minutes=1)
 
     present_ids = [r.id_student for r in db.session.query(Timeline.id_student)
