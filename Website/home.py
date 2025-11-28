@@ -199,9 +199,9 @@ def markStudents(is_testpage=False):
 
 
 
-def timeline_data():
+def timeline_data(hours=12):
     now = datetime.now()
-    limit_history = now - timedelta(hours=6)
+    limit_history = now - timedelta(hours=hours)
     limit_present = now - timedelta(minutes=1)
 
     present_ids = [r.id_student for r in db.session.query(Timeline.id_student)
