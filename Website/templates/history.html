@@ -30,6 +30,18 @@
             box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
         }
 
+        .date-button {
+            padding: 10px 15px;
+            font-size: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            background-color: var(--primary-color-dark);
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+        }
+
         .action-button:hover {
             background-color: #1f86cb;
             transform: translateY(-2px);
@@ -96,6 +108,15 @@
                style="{{ 'background-color: #0f4c75;' if current_range == 12 else '' }}">
                12 Std
             </a>
+
+            <form action="{{ url_for('home.history') }}" method="get" style="display: flex; align-items: center; gap: 10px;">
+                <input type="date" 
+                    name="date_filter" 
+                    class="date-input"
+                    value="{{ selected_date }}" 
+                    required>
+                <button type="submit" class="date-button">Tag anzeigen</button>
+            </form>
         </div>
 
         

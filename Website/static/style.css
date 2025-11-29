@@ -190,7 +190,7 @@ a:hover {
 /* Schülerübersicht Grid */
 .student-grid {
     display: grid;
-    grid-template-columns: repeat(repeat(auto-fill, minmax(200px, 1fr))); /*  2, 1fr*/
+    grid-template-columns: repeat(4, 1fr); /*  repeat(auto-fill, minmax(200px, 1fr))*/
     gap: 30px;
 }
 
@@ -319,6 +319,22 @@ a:hover {
 .delete-btn:hover {
     color: var(--danger-color);
     transform: scale(1.1);
+}
+
+.date_input{
+    padding: 13px 15px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    border-radius: 8px;
+    background-color:  white;
+    outline: none;
+    transition: all 0.3s ease;
+
+}
+
+.date_input:focus {
+    background-color: #1f86cb;
+    transform: translateY(-2px);
 }
 
 /* Error Messages */
