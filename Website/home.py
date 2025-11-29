@@ -25,14 +25,15 @@ def home():
     all_students.sort()
 
     selected_klass = request.args.get('class_filter', default=None)
+    search_name = request.args.get('name_search', default=None)
+    students = markStudents()
 
-    
+    if search_name:
+        students = [s for s in students if search_name.lower() in s.full_name.lower()]
     if selected_klass:
-        students = markStudents()
         students = [s for s in students if s.student_class == selected_klass]
-    else:
-        students = markStudents()
-    return render_template('homepage.html', students=students, selected_klass=selected_klass, all_klasses=all_klasses)
+    
+    return render_template('homepage.html', students=students, selected_klass=selected_klass, all_klasses=all_klasses, search_name=search_name)
 
 
 @home_bp.route('/add_student', methods = ['GET', 'POST'])
@@ -119,8 +120,8 @@ def timeline():
 
 @home_bp.route('/history', methods=['POST', 'GET']) 
 def history():
-        
         date_filter = request.args.get('date_filter')
+        students = markStudents()
 
         try:
             hours = int(request.args.get('hours',12))
@@ -131,14 +132,34 @@ def history():
 
         current_range = hours
 
+        all_klasses_query = db.session.query(distinct(Student.student_class)).all()
+        all_klasses = [k[0] for k in all_klasses_query if k[0]]
+        all_klasses.sort()
+
+        all_students_query = db.session.query(Student.full_name).all()
+        all_students = [s[0] for s in all_students_query if s[0]]
+        all_students.sort()
+
+        selected_klass = request.args.get('class_filter', default=None)
+        search_name = request.args.get('name_search', default=None)
+
+        
+
         if date_filter:
             selected_date = date_filter
             current_range = None
             students = timeline_data(hours=None, specific_date=date_filter)
         else:
             students = timeline_data(hours=hours, specific_date=None)
+
+        if search_name:
+            students = [s for s in students if search_name.lower() in s.full_name.lower()]
+        if selected_klass:
+            students = [s for s in students if s.student_class == selected_klass]
+
         
-        return render_template('history.html', students=students, selected_date=selected_date, current_range=current_range) 
+            
+        return render_template('history.html', students=students, selected_date=selected_date, current_range=current_range, selected_klass=selected_klass, all_klasses=all_klasses, search_name=search_name) 
 
 @home_bp.route('/settings/<int:student_id>', methods=['GET', 'POST'])
 def settings(student_id):
