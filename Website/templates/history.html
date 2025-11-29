@@ -129,9 +129,7 @@
             {% else %}
             <div class="student-card absent">
             {% endif %}
-                <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">
-                    &times;
-                </a>
+                
                 <div class="student-photo"> 
                     <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 
                          onerror="this.onerror=null; this.src='/static/images/PlatzhalterWeiß.png';"
