@@ -27,6 +27,7 @@
             border-radius: 8px;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+            border: none;
         }
 
         .action-button:hover {
@@ -72,12 +73,30 @@
             <h1 style="width: 100%;">Modus: Anwesenheit</h1>
         </div>
         
+        
         <div class="button-group">
             <a href="{{ url_for('home.add_student') }}" class="action-button">Einzelnen Schüler hinzufügen</a>
             <a href="{{ url_for('home.add_student') }}?csv_upload=true" class="action-button">Schüler aus CSV importieren</a>
             <a href="{{ url_for('home.testpage') }}" class="testButton">TestModus</a>
             <a href="{{ url_for('home.history') }}" class="action-button">Anwesenheits Verlauf</a>
         </div>
+        <div class="button-group">
+       
+            <div class="button-group" style="align-items: center; flex-wrap: wrap;">
+                
+                <form action="{{ url_for('home.home') }}" method="GET" style="margin: 0;">
+                    <select name="class_filter" class="class-select" onchange="this.form.submit()">
+                        <option value="">Alle Klassen anzeigen</option>
+                        {% for k in all_klasses %}
+                            <option value="{{ k }}" {% if k == selected_klasses %}selected{% endif %}>
+                                {{ k }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+
 
         
         
