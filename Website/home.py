@@ -120,7 +120,22 @@ def markStudents(is_testpage=False):
 
     present_student_ids = [id_tuple[0] for id_tuple in present_student_ids]
 
-    
+@home_bp.route('/settings/<int:student_id>', methods=['GET', 'POST'])
+def settings(student_id):
+    student = Student.query.get_or_404(student_id)  
+    if request.method == 'POST':
+        neuer_name = request.form.get('input_name')
+        neue_klasse = request.form.get('input_class')
+        student.full_name = neuer_name
+        student.student_class = neue_klasse
+        
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"Fehler")
+            
+    return render_template('settings.html', student=student) 
 
 
     for student in students:
