@@ -80,22 +80,37 @@
             <a href="{{ url_for('home.testpage') }}" class="testButton">TestModus</a>
             <a href="{{ url_for('home.history') }}" class="action-button">Anwesenheits Verlauf</a>
         </div>
-        <div class="button-group">
        
-            <div class="button-group" style="align-items: center; flex-wrap: wrap;">
-                
-                <form action="{{ url_for('home.home') }}" method="GET" style="margin: 0;">
-                    <select name="class_filter" class="class-select" onchange="this.form.submit()">
-                        <option value="">Alle Klassen anzeigen</option>
-                        {% for k in all_klasses %}
-                            <option value="{{ k }}" {% if k == selected_klasses %}selected{% endif %}>
-                                {{ k }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </form>
+                <div class="button-group" style="align-items: center; flex-wrap: wrap;">
+                    
+                    <form action="{{ url_for('home.home') }}" method="GET" style="display: flex; gap: 10px; align-items: center; margin: 0;">
+        
+                        <input type="text" 
+                            name="name_search" 
+                            value="{{ search_name if search_name else '' }}" 
+                            placeholder="Schüler suchen..." 
+                            class="search-input">
+
+                        <select name="class_filter" class="class-select">
+                            <option value="">Alle Klassen</option>
+                            {% for k in all_klasses %}
+                                <option value="{{ k }}" {% if k == selected_klass %}selected{% endif %}>
+                                    {{ k }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit" class="action-button" style="padding: 15px;">
+                            Suchen
+                        </button>
+                        
+                        {% if selected_klass or search_name %}
+                            <a href="{{ url_for('home.home') }}" class="action-button" style="background-color: #7f8c8d; text-decoration:none;">X</a>
+                        {% endif %}
+
+                    </form>
             </div>
-        </div>
+        
 
 
         

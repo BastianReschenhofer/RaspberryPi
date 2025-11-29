@@ -23,14 +23,15 @@ def home():
     all_students.sort()
 
     selected_klass = request.args.get('class_filter', default=None)
+    search_name = request.args.get('name_search', default=None)
+    students = markStudents()
 
-    
+    if search_name:
+        students = [s for s in students if search_name.lower() in s.full_name.lower()]
     if selected_klass:
-        students = markStudents()
         students = [s for s in students if s.student_class == selected_klass]
-    else:
-        students = markStudents()
-    return render_template('homepage.html', students=students, selected_klass=selected_klass, all_klasses=all_klasses)
+    
+    return render_template('homepage.html', students=students, selected_klass=selected_klass, all_klasses=all_klasses, search_name=search_name)
 
 
 @home_bp.route('/add_student', methods = ['GET', 'POST'])
