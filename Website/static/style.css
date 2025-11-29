@@ -321,6 +321,23 @@ a:hover {
     transform: scale(1.1);
 }
 
+.settings-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #ccc;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: color 0.3s ease;
+}
+
+.settings-btn:hover {
+    color: var(--primary-color-dark);
+    
+    transform: rotate(180deg);
+}
+
 .date_input{
     padding: 13px 15px;
     font-size: 16px;
