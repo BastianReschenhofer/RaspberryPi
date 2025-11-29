@@ -134,7 +134,7 @@
                 </a>
                 <div class="student-photo"> 
                     <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 
-                         onerror="this.onerror=null; this.src='https://api.dicebear.com/9.x/initials/svg?seed={{ student_item.full_name }}';"
+                         onerror="this.onerror=null; this.src='/static/images/PlatzhalterWeiß.png';"
                          alt="Foto von {{ student_item.full_name }}">
                 </div>
                 <p class="student-name">{{ student_item.full_name }}</p>
