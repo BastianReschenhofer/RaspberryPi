@@ -199,32 +199,56 @@ def markStudents(is_testpage=False):
 
 
 
-def timeline_data(hours=12):
-    now = datetime.now()
-    limit_history = now - timedelta(hours=hours)
-    limit_present = now - timedelta(minutes=1)
 
-    present_ids = [r.id_student for r in db.session.query(Timeline.id_student)
-                   .filter(Timeline.timestamp >= limit_present).distinct()]
+def timeline_data(hours=12, specific_date=None):
+    now = datetime.now()
+
+    if specific_date:
+        start_time = datetime.strptime(specific_date, "%Y-%m-%d")
+        end_time = start_time + timedelta(days=1)
+    else:
+        hours = hours or 12 
+        end_time = now
+        start_time = now - timedelta(hours=hours)
+
+    recent_limit = now - timedelta(minutes=2)
+    present_students = db.session.query(Timeline.id_student)\
+        .filter(Timeline.timestamp >= recent_limit).all()
+    
+    present_ids = [x[0] for x in present_students]
 
     students = Student.query.all()
 
     for student in students:
         student.present = (student.id in present_ids)
-        
-        history_entries = db.session.query(Timeline.rssi_dbm, Timeline.timestamp)\
+
+        # alle Eintröge im Zeitraum
+        logs = db.session.query(Timeline)\
             .filter(Timeline.id_student == student.id)\
-            .filter(Timeline.timestamp >= limit_history)\
-            .order_by(Timeline.timestamp.asc())\
-            .all()
+            .filter(Timeline.timestamp >= start_time)\
+            .filter(Timeline.timestamp <= end_time)\
+            .order_by(Timeline.timestamp).all()
 
-        values_minute = defaultdict(list)
-        for entry in history_entries:
-            minute_n = entry.timestamp.replace(second=0, microsecond=0)
-            values_minute[minute_n].append(entry.rssi_dbm)
+        log_dict = { log.timestamp.strftime("%H:%M") : log.rssi_dbm for log in logs }
 
-        if history_entries:
-            student.signal_strength = str(history_entries[-1].rssi_dbm)
+        labels = []
+        values = []
+
+        current = start_time
+        while current < end_time and current <= now:
+            time_str = current.strftime("%H:%M")
+            labels.append(time_str)
+
+            rssi = log_dict.get(time_str, -100)
+            values.append(rssi)
+
+            current += timedelta(minutes=1)
+
+        student.time_labels = labels
+        student.signal_history = values
+        
+        if logs:
+            student.signal_strength = str(logs[-1].rssi_dbm)
         else:
             student.signal_strength = 'N/A'
 
