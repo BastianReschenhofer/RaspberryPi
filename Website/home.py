@@ -83,6 +83,12 @@ def add_student():
         student_class= request.form.get('student_class')
         
         if full_name:
+
+            image_file = request.files.get('student_image')
+            if image_file and image_file.filename.endswith('.png'):
+                filename = f"{full_name}.png"
+                save_path = f"static/images/{filename}"
+                image_file.save(save_path)
             new_student = Student(full_name = full_name, present = present, student_class = student_class) 
             db.session.add(new_student)
             db.session.commit()
