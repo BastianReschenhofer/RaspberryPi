@@ -92,10 +92,11 @@
                 <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">
                     &times;
                 </a>
-                <a href="#" class="settings-btn" title="Einstellungen">
-                    &#9881;
-                </a>
                 
+                <a href="{{ url_for('home.settings', student_id=student_item.id) }}" class="settings-btn" title="Einstellungen">
+                    &#9881; 
+                </a>
+
 
                 <div class="student-photo"> 
                     <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 

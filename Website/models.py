@@ -11,6 +11,7 @@ class Student(db.Model):
 
     id = db.Column('id_student', db.Integer, primary_key=True)
     full_name = db.Column(db.String(80), nullable=False)
+    student_class = db.Column('class', db.String(20))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     
     timeline_entries = relationship('Timeline', 
