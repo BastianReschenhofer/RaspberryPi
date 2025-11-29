@@ -20,9 +20,10 @@
             text-decoration: none;
             color: white;
             background-color: var(--primary-color);
+            border: none;
             border-radius: 8px;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+            
         }
 
         .action-button:hover {
@@ -46,36 +47,39 @@
             </p>
 
             <hr>
-
             <form method="POST" action="{{ url_for('home.settings', student_id=student.id) }}">
-            <div style="margin-bottom: 20px;">
-                <label for="klasse" style="display:block; font-weight:bold; margin-bottom:5px;">Klasse ändern:</label>
                 
-                <input type="text" 
-                    id="klasse" 
-                    name="input_class" 
-                    value="{{ student.student_class if student.student_class else '' }}" 
+                <div style="margin-bottom: 20px;">
+                    <label for="klasse" style="display:block; font-weight:bold; margin-bottom:5px;">Name ändern:</label>
                     
-                    style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
-            </div>
+                    <input type="text" 
+                        id="full_name" 
+                        name="input_name" 
+                        value="{{ student.full_name if student.full_name else '' }}" 
+                        
+                        style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
 
             
-            <div style="margin-bottom: 20px;">
-                <label for="klasse" style="display:block; font-weight:bold; margin-bottom:5px;">Name ändern:</label>
-                
-                <input type="text" 
-                    id="full_name" 
-                    name="input_name" 
-                    value="{{ student.full_name if student.full_name else '' }}" 
+                <div style="margin-bottom: 20px;">
+                    <label for="klasse" style="display:block; font-weight:bold; margin-bottom:5px;">Klasse ändern:</label>
                     
-                    style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
-            </div>
+                    <input type="text" 
+                        id="klasse" 
+                        name="input_class" 
+                        value="{{ student.student_class if student.student_class else '' }}" 
+                        
+                        style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
 
-            <button type="submit" class="action-button" style="background-color: #28a745;">
-                Speichern
-            </button>
+                
+                
 
-        </form>
+                <button type="submit" class="action-button" style="background-color: #28a745;">
+                    Speichern
+                </button>
+
+            </form>
 
         <hr style="margin: 30px 0;">
             

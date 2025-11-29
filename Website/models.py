@@ -20,10 +20,11 @@ class Student(db.Model):
                                    cascade="all, delete-orphan")
 
     
-    def __init__(self, full_name, present=True):
+    def __init__(self, full_name, present=True, student_class=None):
         self.full_name = full_name
 
         self.present = present 
+        self.student_class = student_class
 
     def __repr__(self):
         return f'<Student {self.full_name}, Present: {self.present}>'

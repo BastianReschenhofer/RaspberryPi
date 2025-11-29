@@ -13,9 +13,26 @@ import statistics
 
 home_bp = Blueprint('home', __name__)
 
-@home_bp.route('/')
+@home_bp.route('/', methods=['GET'])
 def home(): 
-    return render_template('homepage.html', students=markStudents())
+
+    all_klasses_query = db.session.query(distinct(Student.student_class)).all()
+    all_klasses = [k[0] for k in all_klasses_query if k[0]]
+    all_klasses.sort()
+
+    all_students_query = db.session.query(Student.full_name).all()
+    all_students = [s[0] for s in all_students_query if s[0]]
+    all_students.sort()
+
+    selected_klass = request.args.get('class_filter', default=None)
+
+    
+    if selected_klass:
+        students = markStudents()
+        students = [s for s in students if s.student_class == selected_klass]
+    else:
+        students = markStudents()
+    return render_template('homepage.html', students=students, selected_klass=selected_klass, all_klasses=all_klasses)
 
 
 @home_bp.route('/add_student', methods = ['GET', 'POST'])
@@ -40,12 +57,15 @@ def add_student():
                             
                            
                             present = False
+
+                            student_class = row[1].strip()
                             
                             if full_name:
                                 
                                 new_student = Student(
                                     full_name=full_name, 
-                                    present=present
+                                    present=present,
+                                    student_class=student_class
                                 )
                                 db.session.add(new_student)
                     
@@ -61,11 +81,13 @@ def add_student():
         
         full_name = request.form.get('full_name')
         present = False
+        student_class= request.form.get('student_class')
         
         if full_name:
-            new_student = Student(full_name = full_name, present = present) 
+            new_student = Student(full_name = full_name, present = present, student_class = student_class) 
             db.session.add(new_student)
             db.session.commit()
+
         
             return redirect(url_for('home.home'))
         else:
