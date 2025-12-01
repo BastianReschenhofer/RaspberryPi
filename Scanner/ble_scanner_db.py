@@ -17,8 +17,8 @@ DB_CONFIG = {
 }
 
 # SQL
-SQL_SELECT_ID = "SELECT id_student FROM compare_stundent WHERE full_name = %s"
-SQL_INSERT_TIMELINE = "INSERT INTO studend_timeline (id_student, rssi_dbm, timestamp) VALUES (%s, %s, %s)"
+SQL_SELECT_ID = "SELECT id_student FROM compare_student WHERE full_name = %s"
+SQL_INSERT_TIMELINE = "INSERT INTO student_timeline (id_student, rssi_dbm, timestamp) VALUES (%s, %s, %s)"
 
 # BLE/CSV
 TARGET_MANUFACTURING_DATA = "0011" 

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schülerübersicht - Zeitverlauf</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+
+        .test-mode-page {
+            background-color: var(--soft-red-background);
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .action-button {
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            background-color: var(--primary-color);
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+            border: none;
+        }
+
+        .date-button {
+            padding: 10px 15px;
+            font-size: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            background-color: var(--primary-color-dark);
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.2);
+            border: none;
+        }
+
+        .action-button:hover {
+            background-color: #1f86cb;
+            transform: translateY(-2px);
+        }
+
+        .testButton {
+            padding: 15px 30px;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            background-color: #E74C3C;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+        }
+
+        .testButton:hover {
+            background-color: #FF8C00;
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .testButton:active {
+            background-color: #D35400;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(0);
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="header" style="justify-content: center; text-align: center;">
+            <h1 style="width: 100%;">Modus: Anwesenheit</h1>
+        </div>
+        
+        <div class="button-group">
+
+            <a href="{{ url_for('home.home') }}" class="action-button">Zurück zu Übersicht</a>
+            
+        </div>
+        
+        <div class="button-group" style="margin-top: 10px;">
+            <a href="{{ url_for('home.history', hours=1) }}" 
+               class="action-button"
+               style="{{ 'background-color: #0f4c75;' if current_range == 1 else '' }}">
+               1 Std
+            </a>
+            
+            <a href="{{ url_for('home.history', hours=6) }}" 
+               class="action-button"
+               style="{{ 'background-color: #0f4c75;' if current_range == 6 else '' }}">
+               6 Std
+            </a>
+            
+            <a href="{{ url_for('home.history', hours=12) }}" 
+               class="action-button"
+               style="{{ 'background-color: #0f4c75;' if current_range == 12 else '' }}">
+               12 Std
+            </a>
+
+            <form action="{{ url_for('home.history') }}" method="get" style="display: flex; align-items: center; gap: 10px;">
+                <input type="date" 
+                    name="date_filter" 
+                    class="date-input"
+                    value="{{ selected_date }}" 
+                    required>
+                <button type="submit" class="date-button">Tag anzeigen</button>
+            </form>
+
+            
+        </div>
+
+        <div class="button-group" style="align-items: center; flex-wrap: wrap;">
+                    
+            <form action="{{ url_for('home.history') }}" method="GET" style="display: flex; gap: 10px; align-items: center; margin: 0;">
+
+                <input type="text" 
+                    name="name_search" 
+                    value="{{ search_name if search_name else '' }}" 
+                    placeholder="Schüler suchen..." 
+                    class="search-input">
+
+                <select name="class_filter" class="class-select">
+                    <option value="">Alle Klassen</option>
+                    {% for k in all_klasses %}
+                        <option value="{{ k }}" {% if k == selected_klass %}selected{% endif %}>
+                            {{ k }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="action-button" style="padding: 15px;">
+                    Suchen
+                </button>
+                
+                {% if selected_klass or search_name %}
+                    <a href="{{ url_for('home.history') }}" class="action-button" style="background-color: #7f8c8d; text-decoration:none;">X</a>
+                {% endif %}
+
+            </form>
+    </div>
+        
+        
+        <div class="timeline-grid">
+            {% for student_item in students %}
+            
+            {% if student_item.present %}
+            <div class="student-card present">
+            {% else %}
+            <div class="student-card absent">
+            {% endif %}
+                
+                <a href="{{ url_for('home.settings', student_id=student_item.id) }}" class="settings-btn" title="Einstellungen">
+                    &#9881; 
+                </a>
+                <div class="student-photo"> 
+                    <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 
+                         onerror="this.onerror=null; this.src='/static/images/PlatzhalterWeiß.png';"
+                         alt="Foto von {{ student_item.full_name }}">
+                </div>
+                <p class="student-name">{{ student_item.full_name }}</p>
+                <div class="chart-wrapper">
+                    <canvas 
+                        class="timeline-canvas" 
+                        data-values='{{ student_item.signal_history | tojson }}'
+                        data-labels='{{ student_item.time_labels | tojson }}'> 
+                    </canvas>
+                </div>
+                {% if student_item.present %}
+                    <p class="status-text present">Anwesend</p>
+                {% else %}
+                    <p class="status-text absent">Abwesend</p>
+                {% endif %}
+            </div>
+            
+            
+            {% endfor %}
+        </div>
+    </div>
+     <script>
+
+    const allCharts = document.querySelectorAll('.timeline-canvas');
+
+    allCharts.forEach(canvas => {
+        
+        const rawData = canvas.dataset.values; 
+        const dataPoints = rawData ? JSON.parse(rawData) : [];
+
+        const rawLabels = canvas.dataset.labels;
+        const timeLabels = rawLabels ? JSON.parse(rawLabels) : [];
+
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: timeLabels, 
+                datasets: [{
+                    data: dataPoints,
+                    borderColor: '#1a73e8',    
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.1          
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false} },
+                scales: {
+                    x: { 
+                        display: true,
+                        
+                        ticks: {
+                            maxTicksLimit: 12, 
+                            maxRotation: 0,
+                            autoSkip: true
+                        }
+                    }, 
+                    y: { display: true, min: -100, max: -20 }   
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

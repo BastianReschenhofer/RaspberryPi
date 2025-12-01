@@ -9,7 +9,7 @@ DB_CONFIG = {
 }
 
 # SQL
-SQL_INSERT = "INSERT INTO compare_stundent (id_student, full_name) VALUES (%s, %s)"
+SQL_INSERT = "INSERT INTO compare_student (id_student, full_name) VALUES (%s, %s)"
 
 def add_student(student_id, student_name):
     conn = mysql.connector.connect(**DB_CONFIG)
