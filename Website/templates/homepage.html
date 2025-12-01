@@ -118,10 +118,13 @@
             {% for student_item in students %}
             
             {% if student_item.present %}
-            <div class="student-card present">
+            <div class="student-card present" onclick="window.location.href='{{ url_for('home.history', name_search=student_item.full_name) }}';" style="cursor: pointer;">
             {% else %}
-            <div class="student-card absent">
+            <div class="student-card absent" onclick="window.location.href='{{ url_for('home.history', name_search=student_item.full_name) }}';" style="cursor: pointer;">
             {% endif %}
+
+                <!-- 
+            
                 <a href="{{ url_for('home.delete_student', student_id=student_item.id) }}" class="delete-btn">
                     &times;
                 </a>

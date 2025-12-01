@@ -14,10 +14,7 @@ class Student(db.Model):
     student_class = db.Column('class', db.String(20))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     
-    timeline_entries = relationship('Timeline', 
-                                   backref='student', 
-                                   lazy=True, 
-                                   cascade="all, delete-orphan")
+    timeline_entries = relationship('Timeline', backref='student', lazy=True, cascade="all, delete-orphan")
 
     
     def __init__(self, full_name, present=True, student_class=None):

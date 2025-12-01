@@ -163,6 +163,9 @@
             <div class="student-card absent">
             {% endif %}
                 
+                <a href="{{ url_for('home.settings', student_id=student_item.id) }}" class="settings-btn" title="Einstellungen">
+                    &#9881; 
+                </a>
                 <div class="student-photo"> 
                     <img src="{{ url_for('static', filename='images/' ~ student_item.full_name ~ '.png') }}" 
                          onerror="this.onerror=null; this.src='/static/images/PlatzhalterWeiß.png';"
@@ -225,7 +228,7 @@
                             autoSkip: true
                         }
                     }, 
-                    y: { display: true, min: -100, max: -30 }   
+                    y: { display: true, min: -100, max: -20 }   
                 }
             }
         });
