@@ -133,11 +133,13 @@ def testpage():
 
 @home_bp.route('/timeline', methods=['POST', 'GET']) 
 def timeline():
+        
+        students=markStudents(is_testpage=True)
         all_klasses_query = db.session.query(distinct(Student.student_class)).all()
         all_klasses = [k[0] for k in all_klasses_query if k[0]]
         all_klasses.sort()
 
-        students=markStudents(is_testpage=True)
+        
 
         selected_klass = request.args.get('class_filter', default=None)
         if selected_klass:
