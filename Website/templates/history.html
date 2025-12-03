@@ -8,9 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
 
-        .test-mode-page {
-            background-color: var(--soft-red-background);
-        }
         .button-group {
             display: flex;
             gap: 15px;
@@ -93,25 +90,26 @@
         </div>
         
         <div class="button-group" style="margin-top: 10px;">
-            <a href="{{ url_for('home.history', hours=1) }}" 
+
+            <a href="{{ url_for('home.history', hours=1, name_search=search_name, class_filter=selected_klass) }}" 
                class="action-button"
                style="{{ 'background-color: #0f4c75;' if current_range == 1 else '' }}">
                1 Std
             </a>
             
-            <a href="{{ url_for('home.history', hours=6) }}" 
+            <a href="{{ url_for('home.history', hours=6, name_search=search_name, class_filter=selected_klass) }}" 
                class="action-button"
                style="{{ 'background-color: #0f4c75;' if current_range == 6 else '' }}">
                6 Std
             </a>
             
-            <a href="{{ url_for('home.history', hours=12) }}" 
+            <a href="{{ url_for('home.history', hours=12, name_search=search_name, class_filter=selected_klass) }}" 
                class="action-button"
                style="{{ 'background-color: #0f4c75;' if current_range == 12 else '' }}">
                12 Std
             </a>
 
-            <form action="{{ url_for('home.history') }}" method="get" style="display: flex; align-items: center; gap: 10px;">
+            <form action="{{ url_for('home.history', name_search=search_name, class_filter=selected_klass) }}" method="get" style="display: flex; align-items: center; gap: 10px;">
                 <input type="date" 
                     name="date_filter" 
                     class="date-input"
@@ -119,7 +117,9 @@
                     required>
                 <button type="submit" class="date-button">Tag anzeigen</button>
             </form>
-
+                <!-- 
+                    Problemi: immer wenn nach datum gesucht wird verschwindibus andere filter.
+                -->
             
         </div>
 
