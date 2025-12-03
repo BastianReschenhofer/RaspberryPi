@@ -29,7 +29,7 @@ def add_student(student_id, student_name):
 if __name__ == "__main__":
     
     # Daten
-    NEUE_ID = 5
+    NEUE_ID = 2100
     NEUER_NAME = "Test.test" 
     
     add_student(NEUE_ID, NEUER_NAME)
