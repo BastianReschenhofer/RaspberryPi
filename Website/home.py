@@ -119,11 +119,12 @@ def delete_student(student_id):
 @home_bp.route('/testpage', methods=['POST', 'GET']) 
 def testpage():
         
+        students=markStudents(is_testpage=True)
         all_klasses_query = db.session.query(distinct(Student.student_class)).all()
         all_klasses = [k[0] for k in all_klasses_query if k[0]]
         all_klasses.sort()
 
-        students=markStudents(is_testpage=True)
+        
 
         selected_klass = request.args.get('class_filter', default=None)
         if selected_klass:
@@ -137,9 +138,7 @@ def timeline():
         students=markStudents(is_testpage=True)
         all_klasses_query = db.session.query(distinct(Student.student_class)).all()
         all_klasses = [k[0] for k in all_klasses_query if k[0]]
-        all_klasses.sort()
-
-        
+        all_klasses.sort() 
 
         selected_klass = request.args.get('class_filter', default=None)
         if selected_klass:

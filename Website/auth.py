@@ -6,18 +6,17 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     if request.method == 'POST':
         error = None
-        
-        username = request.form['nm']
-        password = request.form['pw']
-        
-        if len(password) < 8:
-            error = "Password needs at least 8 letters"
-        
-        elif len(username) < 3:
-            error = "Username needs at least 3 letters"
 
-        elif password[0] != password[0].upper():
-            error = "First letter in password needs to be upper case!"
+        username = 'admin'
+        password = 'admin'
+
+        try_username = request.form['nm']
+        try_password = request.form['pw']
+
+
+        
+        if try_password != password or try_username != username:
+            error = "Falsche Anmeldedaten"
 
         if error:
             return render_template('login.html', error=error)
