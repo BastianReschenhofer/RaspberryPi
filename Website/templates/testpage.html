@@ -39,10 +39,6 @@
                 <select id="classSelect" class="class-select" onchange="loadTestData()">
                     <option value="">Alle Klassen</option>
                 </select>
-
-                <button onclick="loadTestData()" class="action-button" style="padding: 15px;">
-                    Aktualisieren
-                </button>
                 
                 <button onclick="resetFilter()" id="resetButton" class="action-button" style="background-color: #7f8c8d; display: none;">
                     X
@@ -89,7 +85,12 @@
             }
 
             var url = "{{ url_for('home.get_data_for_testmode') }}";
-           
+            if (classVal) {
+                url += "?class_filter=" + encodeURIComponent(classVal);
+                
+            } else {
+                window.history.replaceState(null, '', window.location.pathname);
+            }
 
             fetch(url)
                 .then(function(response) { return response.json(); })

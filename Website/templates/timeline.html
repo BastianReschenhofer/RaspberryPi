@@ -75,7 +75,6 @@
             } else {
                 document.getElementById('resetButton').style.display = 'none';
             }
-
             var btnOverview = document.getElementById('btnOverview');
             var baseOverviewUrl = "{{ url_for('home.testpage') }}";
             if(classVal) {
@@ -85,7 +84,12 @@
             }
 
             var url = "{{ url_for('home.get_data_for_testmode') }}";
-            
+            if (classVal) {
+                url += "?class_filter=" + encodeURIComponent(classVal);
+                window.history.replaceState(null, '', window.location.pathname + "?class_filter=" + encodeURIComponent(classVal));
+            } else {
+                window.history.replaceState(null, '', window.location.pathname);
+            }
 
             fetch(url)
                 .then(function(response) { return response.json(); })
