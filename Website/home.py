@@ -7,6 +7,7 @@ from sqlalchemy import distinct
 from datetime import datetime, timedelta
 import statistics
 from collections import defaultdict
+import os
 
 home_bp = Blueprint('home', __name__)
 
@@ -320,6 +321,8 @@ def delete_student(student_id):
     s = Student.query.get_or_404(student_id)
     db.session.delete(s)
     db.session.commit()
+    filename = (f"static/images/{s.full_name}.png")
+    os.remove(filename)
     return redirect(url_for('home.home'))
 
 @home_bp.route('/settings/<int:student_id>', methods=['GET', 'POST'])
