@@ -125,7 +125,7 @@
 
         <div class="button-group" style="align-items: center; flex-wrap: wrap;">
                     
-            <form action="{{ url_for('home.history') }}" method="GET" style="display: flex; gap: 10px; align-items: center; margin: 0;">
+            <form action="{{ url_for('home.history', name_search=search_name, class_filter=selected_klass) }}" method="GET" style="display: flex; gap: 10px; align-items: center; margin: 0;">
 
                 <input type="text" 
                     name="name_search" 
@@ -151,7 +151,7 @@
                 {% endif %}
 
             </form>
-    </div>
+        </div>
         
         
         <div class="timeline-grid">

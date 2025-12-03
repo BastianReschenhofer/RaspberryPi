@@ -95,16 +95,11 @@
 
         <div class="button-group">
             <a href="{{ url_for('home.home') }}" class="action-button">Testmodus verlassen</a>
-            <a href="{{ url_for('home.testpage') }}" class="action-button">Zurück zur Übersicht</a>
+            <a href="{{ url_for('home.testpage', class_filter=selected_klass) }}" class="action-button">Zurück zur Übersicht</a>
         </div>
 
-        <form action="{{ url_for('home.timeline') }}" method="GET" style="display: flex; gap: 10px; align-items: center; margin: 0;">
+        <form action="{{ url_for('home.timeline', class_filter=selected_klass) }}" method="GET" style="display: flex; gap: 10px; align-items: center; margin: 0;">
 
-                <input type="text" 
-                    name="name_search" 
-                    value="{{ search_name if search_name else '' }}" 
-                    placeholder="Schüler suchen..." 
-                    class="search-input">
 
                 <select name="class_filter" class="class-select">
                     <option value="">Alle Klassen</option>
@@ -124,6 +119,7 @@
                 {% endif %}
 
             </form>
+
 
         <div class="student-grid">
             {% for student_item in students if student_item.present %}
