@@ -28,32 +28,25 @@ CSV_HEADER = ["Timestamp", "RSSI_dBm", "Manufacturing_Data_ASCII", "ID_Name"]
 class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
-
-    def _get_db_connection(self):
-        # Verbinde
+        self.conn = None
         try:
-            conn = mysql.connector.connect(**DB_CONFIG)
-            if conn and conn.is_connected():
-                return conn
-            else:
-                return None
-        except Error:
-            print("DB-Fehler")
-            return None
+            self.conn = mysql.connector.connect(**DB_CONFIG)
+            print("DB: Initial verbunden")
+        except Error as e:
+            print(f"DB-Start-Fehler: {e}")
 
     def _handle_database_ops(self, name_for_lookup, rssi, timestamp):
-        # DB
-        conn = None
+        if self.conn is None:
+            return name_for_lookup 
+
         cursor = None
         
         try:
-            conn = self._get_db_connection()
-            if conn is None:
-                return name_for_lookup 
+            self.conn.ping(reconnect=True, attempts=3, delay=1)
 
-            cursor = conn.cursor()
+            cursor = self.conn.cursor()
             
-            # ID
+            # ID suchen
             cursor.execute(SQL_SELECT_ID, (name_for_lookup,))
             result = cursor.fetchone()
 
@@ -63,23 +56,19 @@ class ScanDelegate(DefaultDelegate):
                 # Speichern
                 data_to_insert = (student_id, rssi, timestamp)
                 cursor.execute(SQL_INSERT_TIMELINE, data_to_insert)
-                conn.commit()
+                self.conn.commit()
                 print("DB-OK")
                 return student_id 
             else:
                 return name_for_lookup 
 
-        except Error:
-            print("SQL-Fehler")
-            if conn:
-                conn.rollback() 
+        except Error as e:
+            print(f"SQL-Fehler: {e}")
             return name_for_lookup 
 
         finally:
             if cursor:
                 cursor.close()
-            if conn and conn.is_connected():
-                conn.close()
 
 
     def handleDiscovery(self, dev, isNewDev, isNewData):
@@ -98,19 +87,19 @@ class ScanDelegate(DefaultDelegate):
                 print("binasciiError")
                 return
 
-            # DB/CSV-Daten
+            # DB
             id_or_name_for_csv = self._handle_database_ops(ascii_data, rssi, timestamp)
             
             data_row = [timestamp, rssi, ascii_data, id_or_name_for_csv]
             
-            # CSV
+            # CSV schreiben
             try:
-                file_is_empty = not os.path.exists(OUTPUT_FILE) or os.path.getsize(OUTPUT_FILE) == 0
+                file_exists = os.path.exists(OUTPUT_FILE) and os.path.getsize(OUTPUT_FILE) > 0
                 
                 with open(OUTPUT_FILE, mode='a', newline='') as f:
                     writer = csv.writer(f)
                     
-                    if file_is_empty:
+                    if not file_exists:
                         writer.writerow(CSV_HEADER)
                         
                     writer.writerow(data_row)
@@ -120,9 +109,8 @@ class ScanDelegate(DefaultDelegate):
             except Exception:
                 print("CSV-Eintrag-Fehler")
 
-# Haupt
 def run_sniffer():
-    print("Start")
+    print("Start Sniffer...")
     
     scanner = Scanner().withDelegate(ScanDelegate())
     
@@ -130,8 +118,8 @@ def run_sniffer():
         try:
             scanner.scan(10.0) 
             
-        except Exception:
-            print("Scan-Fehler")
+        except Exception as e:
+            print(f"Scan-Fehler: {e}")
             time.sleep(5)
 
 if __name__ == "__main__":
