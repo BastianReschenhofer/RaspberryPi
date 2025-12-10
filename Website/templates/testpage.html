@@ -131,6 +131,8 @@
             students.forEach(function(s) {
                 
                 html += '<div class="student-card-test present ' + s.signal_class + '">';
+
+                    
                 
                 html += '<div class="student-photo">';
                 html += '<img src="' + s.urls.image + '" onerror="this.onerror=null; this.src=\'' + s.urls.placeholder + '\';">';

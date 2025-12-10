@@ -28,12 +28,18 @@
             <button onclick="setHours(6)" id="btn-6h" class="action-button">6 Std</button>
             <button onclick="setHours(12)" id="btn-12h" class="action-button">12 Std</button>
 
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <input type="date" id="dateInput" class="date-input">
-                <button onclick="loadHistoryData()" class="action-button" style="font-size: 12px;">Tag anzeigen</button>
+            <input type="date" id="dateInput" class="date-input">
+                <button onclick="loadHistoryData()" class="action-button" >Tag anzeigen</button>
                 <button onclick="clearDate()" class="action-button" style="background-color: #7f8c8d;">X</button>
+
+        </div>
+        <div class="button-group" style="margin-top: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                
             </div>
         </div>
+
+
 
         <div class="button-group" style="align-items: center;">
             <div style="display: flex; gap: 10px; align-items: center;">
@@ -115,7 +121,7 @@
             var dateVal = document.getElementById('dateInput').value;
 
             if (searchVal || classVal || dateVal) {
-                document.getElementById('resetButton').style.display = 'inline-flex';
+                document.getElementById('resetButton').style.display = 'inline';
             } else {
                 document.getElementById('resetButton').style.display = 'none';
             }

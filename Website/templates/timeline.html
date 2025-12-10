@@ -17,6 +17,10 @@
             width: 100%;
             height: 120px; 
         }
+
+        .signal-strength.range1 { color: #28a745; }
+        .signal-strength.range2 { color: #ffa500; }
+        .signal-strength.range3 { color: #dc3545; }
     </style>
 </head>
 
@@ -140,7 +144,7 @@
                 html += '</div>';
 
                 html += '<p class="student-name">' + s.full_name + '</p>';
-                html += '<p class="signal-strength">Aktuell: ' + s.signal_strength + ' dBm</p>';
+                html += '<p class="signal-strength ' + s.signal_class + '">Signal: ' + s.signal_strength + ' dBm</p>';
                 
                 html += '<div class="chart-wrapper">';
                 html += '<canvas id="chart-' + s.id + '" class="timeline-canvas"></canvas>';

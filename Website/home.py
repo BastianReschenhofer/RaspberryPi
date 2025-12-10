@@ -223,7 +223,7 @@ def calculate_history_charts(specific_date=None, hours=12):
         while current_step < loop_end:
             time_str = current_step.strftime("%H:%M")
             labels.append(time_str)
-            values.append(log_dict.get(time_str, None))
+            values.append(log_dict.get(time_str, -100))
             current_step += timedelta(minutes=1)
 
         student.time_labels = labels
