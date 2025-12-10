@@ -25,7 +25,6 @@ TARGET_MANUFACTURING_DATA = "0011"
 OUTPUT_FILE = "ble_sniffer_data.csv"
 CSV_HEADER = ["Timestamp", "RSSI_dBm", "Manufacturing_Data_ASCII", "ID_Name"]
 
-# Delegate
 class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
@@ -96,6 +95,7 @@ class ScanDelegate(DefaultDelegate):
                 byte_data = binascii.unhexlify(trimmed_data)
                 ascii_data = byte_data.decode('ascii').strip() 
             except (binascii.Error, UnicodeDecodeError):
+                print("binasciiError")
                 return
 
             # DB/CSV-Daten
@@ -118,7 +118,7 @@ class ScanDelegate(DefaultDelegate):
                 print("CSV-OK")
                 
             except Exception:
-                print("CSV-Fehler")
+                print("CSV-Eintrag-Fehler")
 
 # Haupt
 def run_sniffer():
@@ -141,5 +141,5 @@ if __name__ == "__main__":
         print("Ende")
         sys.exit(0)
     except Exception:
-        print("Fatal")
+        print("Fatal Probleme")
         sys.exit(1)
