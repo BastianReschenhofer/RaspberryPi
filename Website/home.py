@@ -330,9 +330,32 @@ def settings(student_id):
     
     s = Student.query.get_or_404(student_id)
     if request.method == 'POST':
+
+        old_name = s.full_name
+        new_name = request.form.get('input_name')
+
+        old_path = os.path.join('static', 'images', f"{old_name}.png")
+        new_path = os.path.join('static', 'images', f"{new_name}.png")
+
+        
         s.full_name = request.form.get('input_name')
+        img = request.files.get('student_image')
         s.student_class = request.form.get('input_class')
+
+        if img and img.filename != '':
+            if os.path.exists(old_path):
+                os.remove(old_path)
+            img.save(new_path)
+
+        if old_name != new_name:
+            if os.path.exists(old_path):
+                os.rename(old_path, new_path)
+
+      
+
+
         try: db.session.commit()
         except: db.session.rollback()
+    
             
     return render_template('settings.html', student=s)
