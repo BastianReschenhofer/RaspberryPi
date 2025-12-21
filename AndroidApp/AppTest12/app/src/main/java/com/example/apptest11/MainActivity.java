@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
@@ -25,10 +25,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
-
 import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
@@ -78,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
+
     private final androidx.activity.result.ActivityResultLauncher<ScanOptions> barcodeLauncher =
             registerForActivityResult(new ScanContract(), result -> {
 
@@ -98,6 +100,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefsDaS = getSharedPreferences("app_prefs", MODE_PRIVATE);
+
+        boolean privacyAccepted = prefsDaS.getBoolean("privacy_accepted", false);
+
+        if (!privacyAccepted) {
+            showPrivacyDialog();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -318,6 +328,31 @@ public class MainActivity extends AppCompatActivity {
             );
         }
     }
+
+    //Datenschutz
+    private void showPrivacyDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Datenschutz")
+                .setMessage(
+                        "Diese App verwendet Bluetooth.\n" +
+                                "Es werden keine personenbezogenen Daten gespeichert oder weitergegeben."
+                )
+                .setCancelable(false)
+                .setPositiveButton("Ich stimme zu", (dialog, which) -> {
+                    SharedPreferences prefs =
+                            getSharedPreferences("app_prefs", MODE_PRIVATE);
+                    prefs.edit()
+                            .putBoolean("privacy_accepted", true)
+                            .apply();
+                })
+                .setNegativeButton("App schließen", (dialog, which) -> {
+                    finish();
+                })
+                .show();
+    }
+
+
+
 
     @Override
     public void onRequestPermissionsResult(
