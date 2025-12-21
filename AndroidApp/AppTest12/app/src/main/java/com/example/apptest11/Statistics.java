@@ -23,7 +23,7 @@ public class Statistics extends AppCompatActivity {
         long seconds = timeMs / 1000;
 
         text.setText(
-                "\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+                "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
                 "Statistik\n\n" +
                         "Gesendete BLE-Pakete: " + count + "\n\n" +
                         "Gesamte Sendezeit: " + seconds + " Sekunden"

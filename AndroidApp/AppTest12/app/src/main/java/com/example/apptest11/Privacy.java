@@ -15,7 +15,7 @@ public class Privacy extends AppCompatActivity {
         TextView text = findViewById(R.id.privacy_text);
 
         text.setText(
-                "\n\n\n\n\n\n\n\n\n\n\n\n\n\n"+
+                "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"+
                 "Datenschutz-Information\n\n" +
                         "Diese App sendet in regelmäßigen Abständen ein Bluetooth-Low-Energy-Signal.\n\n" +
                         "Dabei wird ausschließlich ein anonymisierter Hash übertragen.\n\n" +
