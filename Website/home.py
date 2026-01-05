@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 import statistics
 from collections import defaultdict
 import os
+import time
+import hashlib
 
 home_bp = Blueprint('home', __name__)
 
@@ -306,11 +308,18 @@ def add_student():
         name = request.form.get('full_name')
         cls = request.form.get('student_class')
         if name:
+            hash_basis = f"{name}{time.time()}".encode('utf-8')
+            qr_hash = hashlib.sha256(hash_basis).hexdigest()[:8]
+
             img = request.files.get('student_image')
             if img and img.filename.endswith('.png'):
                 img.save(f"static/images/{name}.png")
-            db.session.add(Student(full_name=name, present=False, student_class=cls))
+
+            new_student = Student(full_name=name, present=False, student_class=cls)
+            new_student.qr_hash = qr_hash
+            db.session.add(new_student)
             db.session.commit()
+
             return redirect(url_for('home.home'))
 
     return render_template('add_student.html')

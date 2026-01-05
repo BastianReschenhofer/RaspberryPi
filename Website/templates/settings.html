@@ -4,66 +4,88 @@
     <meta charset="UTF-8">
     <title>Einstellungen: {{ student.full_name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-
-        
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <div class="page-container">
         <h1>Einstellungen für {{ student.full_name }}</h1>
 
         <div class="card">
-            
             <p><strong>ID:</strong> {{ student.id }}</p>
             <p><strong>Name:</strong> {{ student.full_name }}</p>
-            <p><strong>Klasse:</strong> {{ student.student_class if student.student_class}}</p>
+            <p><strong>Klasse:</strong> {{ student.student_class if student.student_class else 'Keine Angabe' }}</p>
             <p><strong>Aktueller Status:</strong> 
                {{ 'Anwesend' if student.present else 'Abwesend' }}
             </p>
 
             <hr>
-            <form method="POST" action="{{ url_for('home.settings', student_id=student.id) }}">
+
+            <div style="text-align: center; margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 10px;">
+                <h3 style="margin-bottom: 10px;">Scanner QR-Code (Hash)</h3>
+                <div id="qrcode-container" style="display: flex; justify-content: center; margin-bottom: 10px;"></div>
+                <p style="font-family: monospace; font-size: 1.1em; color: #555;">Code: {{ student.qr_hash if student.qr_hash else 'Kein Hash vorhanden' }}</p>
+            </div>
+
+            <hr>
+
+            <form method="POST" action="{{ url_for('home.settings', student_id=student.id) }}" enctype="multipart/form-data">
                 
                 <div style="margin-bottom: 20px;">
-                    <label for="klasse" style="display:block; font-weight:bold; margin-bottom:5px;">Name ändern:</label>
-                    
+                    <label for="full_name" style="display:block; font-weight:bold; margin-bottom:5px;">Name ändern:</label>
                     <input type="text" 
                         id="full_name" 
                         name="input_name" 
                         value="{{ student.full_name if student.full_name else '' }}" 
-                        
                         style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
 
-            
                 <div style="margin-bottom: 20px;">
                     <label for="klasse" style="display:block; font-weight:bold; margin-bottom:5px;">Klasse ändern:</label>
-                    
                     <input type="text" 
                         id="klasse" 
                         name="input_class" 
                         value="{{ student.student_class if student.student_class else '' }}" 
-                        
                         style="padding: 10px; width: 100%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
 
-                
-                <label for="student_image">Foto:</label>
-                <input type="file" id="student_image" name="student_image" accept=".png" style="margin-bottom: 15px;">
+                <div style="margin-bottom: 20px;">
+                    <label for="student_image" style="display:block; font-weight:bold; margin-bottom:5px;">Foto aktualisieren (.png):</label>
+                    <input type="file" id="student_image" name="student_image" accept=".png" style="margin-bottom: 15px;">
+                </div>
                 
                 <button type="submit" class="action-button" style="background-color: #28a745;">
-                    Speichern
+                    Änderungen speichern
                 </button>
-
             </form>
 
-        <hr style="margin: 30px 0;">
+            <hr style="margin: 30px 0;">
             
-            <a href="{{ url_for('home.delete_student', student_id=student.id) }}" class="testButton"> Schüler löschen </a>
-            
-            <a href="{{ url_for('home.home') }}" class="action-button">Zurück</a>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <a href="{{ url_for('home.delete_student', student_id=student.id) }}" 
+                   class="testButton" 
+                   onclick="return confirm('Möchtest du diesen Schüler wirklich löschen?');"> 
+                   Schüler löschen 
+                </a>
+                <a href="{{ url_for('home.home') }}" class="action-button">Zurück zur Übersicht</a>
+            </div>
         </div>
     </div>
+
+    <script>
+
+        var qrText = "{{ student.qr_hash }}";
+        if (qrText && qrText !== "None" && qrText !== "") {
+            new QRCode(document.getElementById("qrcode-container"), {
+                text: qrText,
+                width: 160,
+                height: 160,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        } else {
+            document.getElementById("qrcode-container").innerHTML = "<p style='color:red;'>Bitte Schüler neu speichern, um Hash zu generieren.</p>";
+        }
+    </script>
 </body>
 </html>
