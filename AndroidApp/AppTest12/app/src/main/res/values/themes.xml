@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.AppTest11" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/apphintergrund3</item>
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/turkise</item>
         <item name="colorOnPrimary">@color/white</item>
