@@ -32,13 +32,9 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "BLE_ADVERTISER";
-
     private static final long ADVERTISING_INTERVAL_MS = 1000;
-
     private static final int ADVERTISING_DURATION_MS = 120;
-
     private static final int MANUFACTURER_ID = 0x1100;
-
     private static final int REQUEST_BLUETOOTH_PERMISSIONS = 100;
 
     private EditText nameInput;
@@ -47,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView statusText;
     private Button privacyButton;
     private Button statsButton;
-
-
 
     // BLE
     private BluetoothAdapter bluetoothAdapter;
@@ -73,13 +67,6 @@ public class MainActivity extends AppCompatActivity {
     private long advertisingStartTime = 0;
     private long totalAdvertisingTime = 0;
 
-
-
-
-
-
-
-
     private final androidx.activity.result.ActivityResultLauncher<ScanOptions> barcodeLauncher =
             registerForActivityResult(new ScanContract(), result -> {
 
@@ -99,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
             });
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences prefsDaS = getSharedPreferences("app_prefs", MODE_PRIVATE);
+    protected void onCreate(Bundle savedInstanceState) { //saveInstanceState -> speichert Daten des vorherigen Zustand falls App im Hintergrund lief
+        SharedPreferences prefsDaS = getSharedPreferences("app_prefs", MODE_PRIVATE); //kleiner Speicher für Speichern des Hashes
 
         boolean privacyAccepted = prefsDaS.getBoolean("privacy_accepted", false);
 
@@ -221,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("stats", MODE_PRIVATE);
         prefs.edit().putInt("count", advertisingCount).putLong("time", totalAdvertisingTime).apply();
-
     }
 
     private void startSingleAdvertising(String hash) {
@@ -306,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-
   
     // Berechtigungen
     private void checkAndRequestPermissions() {
@@ -350,9 +335,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .show();
     }
-
-
-
 
     @Override
     public void onRequestPermissionsResult(
@@ -414,8 +396,6 @@ public class MainActivity extends AppCompatActivity {
             statusText.setTextColor(normalColor);
         }, 200);
     }
-
-
 }
 
 
