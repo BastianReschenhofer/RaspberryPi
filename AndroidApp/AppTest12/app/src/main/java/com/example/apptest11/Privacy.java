@@ -22,6 +22,6 @@ public class Privacy extends AppCompatActivity {
                         "Es werden keine personenbezogenen Daten wie Name, Standort oder Kontakte gespeichert oder versendet.\n\n" +
                         "Der Hash wird lokal auf dem Gerät gespeichert und kann jederzeit neu registriert werden.\n\n" +
                         "Die App dient ausschließlich zu Lern- und Testzwecken."
-        );
+        ); //Text von Gemini
     }
 }
