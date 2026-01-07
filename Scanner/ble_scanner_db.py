@@ -17,9 +17,9 @@ DB_CONFIG = {
 }
 
 # SQL
-SQL_SELECT_ID = "SELECT id_student FROM compare_student WHERE hash_code = %s"
+SQL_SELECT_ID = "SELECT id_student FROM compare_student WHERE qr_hash = %s"
 
-SQL_SELECT_STUDENT = "SELECT id_student, full_name FROM compare_student WHERE hash_code = %s"
+SQL_SELECT_STUDENT = "SELECT id_student, full_name FROM compare_student WHERE qr_hash = %s"
 
 SQL_INSERT_TIMELINE = "INSERT INTO student_timeline (id_student, rssi_dbm, timestamp) VALUES (%s, %s, %s)"
 
