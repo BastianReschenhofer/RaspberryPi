@@ -17,8 +17,12 @@ DB_CONFIG = {
 }
 
 # SQL
-SQL_SELECT_ID = "SELECT id_student FROM compare_student WHERE full_name = %s"
+SQL_SELECT_ID = "SELECT id_student FROM compare_student WHERE qr_hash = %s"
+
+SQL_SELECT_STUDENT = "SELECT id_student, full_name FROM compare_student WHERE qr_hash = %s"
+
 SQL_INSERT_TIMELINE = "INSERT INTO student_timeline (id_student, rssi_dbm, timestamp) VALUES (%s, %s, %s)"
+
 
 # BLE/CSV
 TARGET_MANUFACTURING_DATA = "0011" 
@@ -44,38 +48,37 @@ class ScanDelegate(DefaultDelegate):
             print("DB-Fehler beim Verbinden")
             return None
 
-    def _handle_database_ops(self, name_for_lookup, rssi, timestamp):
-        #DB
+    def _handle_database_ops(self, hash_to_lookup, rssi, timestamp):
         conn = self._get_db_connection()
         cursor = None
         
         if conn is None:
-            return name_for_lookup 
+            return "Keine DB-Verbindung"
 
         try:
             cursor = conn.cursor()
             
-            #ID
-            cursor.execute(SQL_SELECT_ID, (name_for_lookup,))
+            # Suche ID und Name basierend auf dem empfangenen Hash
+            cursor.execute(SQL_SELECT_STUDENT, (hash_to_lookup,))
             result = cursor.fetchone()
 
             if result:
-                student_id = result[0] 
+                student_id, full_name = result
                 
-                #Speichern
+                # Speichere den Scan in der Timeline-Tabelle
                 data_to_insert = (student_id, rssi, timestamp)
                 cursor.execute(SQL_INSERT_TIMELINE, data_to_insert)
                 conn.commit()
-                print("DB-OK")
-                return student_id 
+                
+                print(f"DB-OK: Student {full_name} erkannt")
+                return full_name # Rückgabe für die CSV
             else:
-                return name_for_lookup 
+                print(f"Hash {hash_to_lookup} unbekannt")
+                return "Unbekannter Hash"
 
-        except Error:
-            print("SQL-Fehler")
-            
-            return name_for_lookup 
-
+        except Error as e:
+            print(f"SQL-Fehler: {e}")
+            return "Fehler"
         finally:
             if cursor:
                 cursor.close()
@@ -84,39 +87,40 @@ class ScanDelegate(DefaultDelegate):
     def handleDiscovery(self, dev, isNewDev, isNewData):
         rssi = dev.rssi
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
         manuf_data_hex = dev.getValueText(0xFF)
 
         if manuf_data_hex and manuf_data_hex.startswith(TARGET_MANUFACTURING_DATA):
-            
-            trimmed_data = manuf_data_hex[4:]
+
+            raw_hex_payload = manuf_data_hex[4:]
+    
             try:
-                byte_data = binascii.unhexlify(trimmed_data)
-                ascii_data = byte_data.decode('ascii').strip() 
-            except (binascii.Error, UnicodeDecodeError):
-                print("binasciiError")
-                return
+                
+                byte_data = binascii.unhexlify(raw_hex_payload)
+                received_hash = byte_data.decode('ascii').strip().upper()
+        
+                print(f"Hash (dekodiert): {received_hash}")
 
+                full_name_for_csv = self._handle_database_ops(received_hash, rssi, timestamp)
 
-            #DB/CSV-Daten
-            id_or_name_for_csv = self._handle_database_ops(ascii_data, rssi, timestamp)
+            except (binascii.Error, UnicodeDecodeError) as e:
+                print(f"Dekodierungsfehler: {e}")
             
-            data_row = [timestamp, rssi, ascii_data, id_or_name_for_csv]
             
-            #CSV
+            full_name_for_csv = self._handle_database_ops(received_hash, rssi, timestamp)
+            
+    
+    
+            data_row = [timestamp, rssi, received_hash, full_name_for_csv]
+            
+            # CSV schreiben
             try:
                 file_is_empty = not os.path.exists(OUTPUT_FILE) or os.path.getsize(OUTPUT_FILE) == 0
-                
                 with open(OUTPUT_FILE, mode='a', newline='') as f:
                     writer = csv.writer(f)
-                    
                     if file_is_empty:
                         writer.writerow(CSV_HEADER)
-                        
                     writer.writerow(data_row)
-                    
-                print("CSV-OK")
-                
+                print(f"CSV-OK (Gefunden: {full_name_for_csv})")
             except Exception:
                 print("CSV-Fehler")
 

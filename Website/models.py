@@ -13,6 +13,8 @@ class Student(db.Model):
     full_name = db.Column(db.String(80), nullable=False)
     student_class = db.Column('class', db.String(20))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+    qr_hash = db.Column(db.String(128), unique = True, nullable=True)
+    
     
     timeline_entries = relationship('Timeline', backref='student', lazy=True, cascade="all, delete-orphan")
 

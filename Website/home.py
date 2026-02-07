@@ -7,6 +7,9 @@ from sqlalchemy import distinct
 from datetime import datetime, timedelta
 import statistics
 from collections import defaultdict
+import os
+import time
+import hashlib
 
 home_bp = Blueprint('home', __name__)
 
@@ -305,11 +308,18 @@ def add_student():
         name = request.form.get('full_name')
         cls = request.form.get('student_class')
         if name:
+            hash_basis = f"{name}{time.time()}".encode('utf-8')
+            qr_hash = hashlib.sha256(hash_basis).hexdigest()[:8]
+
             img = request.files.get('student_image')
             if img and img.filename.endswith('.png'):
                 img.save(f"static/images/{name}.png")
-            db.session.add(Student(full_name=name, present=False, student_class=cls))
+
+            new_student = Student(full_name=name, present=False, student_class=cls)
+            new_student.qr_hash = qr_hash
+            db.session.add(new_student)
             db.session.commit()
+
             return redirect(url_for('home.home'))
 
     return render_template('add_student.html')
@@ -320,6 +330,8 @@ def delete_student(student_id):
     s = Student.query.get_or_404(student_id)
     db.session.delete(s)
     db.session.commit()
+    filename = (f"static/images/{s.full_name}.png")
+    os.remove(filename)
     return redirect(url_for('home.home'))
 
 @home_bp.route('/settings/<int:student_id>', methods=['GET', 'POST'])
@@ -327,9 +339,32 @@ def settings(student_id):
     
     s = Student.query.get_or_404(student_id)
     if request.method == 'POST':
+
+        old_name = s.full_name
+        new_name = request.form.get('input_name')
+
+        old_path = os.path.join('static', 'images', f"{old_name}.png")
+        new_path = os.path.join('static', 'images', f"{new_name}.png")
+
+        
         s.full_name = request.form.get('input_name')
+        img = request.files.get('student_image')
         s.student_class = request.form.get('input_class')
+
+        if img and img.filename != '':
+            if os.path.exists(old_path):
+                os.remove(old_path)
+            img.save(new_path)
+
+        if old_name != new_name:
+            if os.path.exists(old_path):
+                os.rename(old_path, new_path)
+
+      
+
+
         try: db.session.commit()
         except: db.session.rollback()
+    
             
     return render_template('settings.html', student=s)
