@@ -147,11 +147,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopPeriodicAdvertising();
-    }
+
 
     // BLE Advertising Logik
     private void startPeriodicAdvertising(String hash) {
