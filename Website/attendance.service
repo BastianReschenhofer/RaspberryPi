@@ -1,0 +1,13 @@
+[Unit]
+Description=Attendance Guard Web App
+After=network.target
+
+[Service]
+User=root
+
+WorkingDirectory=/home/jakob/Diplomarbeit/RaspberryPi/Website
+ExecStart=/home/jakob/Diplomarbeit/RaspberryPi/venv/bin/gunicorn -w 4 -b 0.0.0.0:80 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
