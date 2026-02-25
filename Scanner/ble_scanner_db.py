@@ -105,9 +105,6 @@ class ScanDelegate(DefaultDelegate):
             except (binascii.Error, UnicodeDecodeError) as e:
                 print(f"Dekodierungsfehler: {e}")
             
-            
-            full_name_for_csv = self._handle_database_ops(received_hash, rssi, timestamp)
-            
     
     
             data_row = [timestamp, rssi, received_hash, full_name_for_csv]
