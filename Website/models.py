@@ -34,10 +34,10 @@ class Timeline(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
 
-    id_student = db.Column(db.Integer, db.ForeignKey('compare_student.id_student'), nullable = False)
+    id_student = db.Column(db.Integer, db.ForeignKey('compare_student.id_student'), nullable = False, index=True)
 
     rssi_dbm = db.Column(db.Integer, nullable = False)
-    timestamp = db.Column(db.DateTime, default=func.now())
+    timestamp = db.Column(db.DateTime, default=func.now(), index=True)
     
     def __repr__(self):
         return f'<Timeline Entry {self.id} (Student {self.id_student})>'
