@@ -79,7 +79,7 @@ class ScanDelegate(DefaultDelegate):
         except Error as e:
             print(f"SQL-Fehler: {e}")
             return "Fehler"
-        finally:
+        finally:         #stellt sicher das der Cursor immer geschlossen wird (auch wenn Fehler passiert)
             if cursor:
                 cursor.close()
 
@@ -111,6 +111,7 @@ class ScanDelegate(DefaultDelegate):
             
             # CSV schreiben
             try:
+                #Überprüfen ob file existiert
                 file_is_empty = not os.path.exists(OUTPUT_FILE) or os.path.getsize(OUTPUT_FILE) == 0
                 with open(OUTPUT_FILE, mode='a', newline='') as f:
                     writer = csv.writer(f)
