@@ -363,7 +363,9 @@ def settings(student_id):
       
 
 
-        try: db.session.commit()
+        try: 
+            db.session.commit()
+            return redirect(url_for('home.home'))
         except: db.session.rollback()
     
             
