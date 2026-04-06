@@ -293,12 +293,19 @@ def add_student():
                 stream = io.StringIO(file.stream.read().decode("utf-8"), newline=None)
                 csv_reader = csv.reader(stream)
                 try:
-                    for row in csv_reader:
+                    for i, row in enumerate(csv_reader):
                         if len(row) >= 1:
                             name = row[0].strip()
                             cls = row[1].strip() if len(row) > 1 else ""
                             if name:
-                                db.session.add(Student(full_name=name, present=False, student_class=cls))
+                                hash_basis = f"{name}{time.time()}{i}".encode('utf-8')
+                                qr_hash = hashlib.sha256(hash_basis).hexdigest()[:8]
+
+                                new_student = Student(full_name=name, present=False, student_class=cls)
+                                new_student.qr_hash = qr_hash
+
+                                db.session.add(new_student)
+
                     db.session.commit()
                     return redirect(url_for('home.home'))
                 except Exception as e:
@@ -331,7 +338,8 @@ def delete_student(student_id):
     db.session.delete(s)
     db.session.commit()
     filename = (f"static/images/{s.full_name}.png")
-    os.remove(filename)
+    if os.path.exists(filename):
+        os.remove(filename)
     return redirect(url_for('home.home'))
 
 @home_bp.route('/settings/<int:student_id>', methods=['GET', 'POST'])
