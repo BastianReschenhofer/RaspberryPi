@@ -10,24 +10,29 @@ from collections import defaultdict
 import os
 import time
 import hashlib
+from flask_login import login_required
 
 home_bp = Blueprint('home', __name__)
 
 ###########################################
 
 @home_bp.route('/', methods=['GET'])
+@login_required
 def home(): 
     return render_template('homepage.html')
 
 @home_bp.route('/history', methods=['POST', 'GET']) 
+@login_required
 def history():
     return render_template('history.html')
 
 @home_bp.route('/timeline', methods=['POST', 'GET']) 
+@login_required
 def timeline():
     return render_template('timeline.html')
 
 @home_bp.route('/testpage', methods=['POST', 'GET']) 
+@login_required
 def testpage():
     return render_template('testpage.html')
 
@@ -284,6 +289,7 @@ def calculate_test_mode_data():
 ###########################################
 
 @home_bp.route('/add_student', methods = ['GET', 'POST'])
+@login_required
 def add_student():
     if request.method == 'POST':
         
@@ -332,6 +338,7 @@ def add_student():
     return render_template('add_student.html')
 
 @home_bp.route('/delete_student/<int:student_id>', methods=['POST', 'GET'])
+@login_required
 def delete_student(student_id):
    
     s = Student.query.get_or_404(student_id)
@@ -343,6 +350,7 @@ def delete_student(student_id):
     return redirect(url_for('home.home'))
 
 @home_bp.route('/settings/<int:student_id>', methods=['GET', 'POST'])
+@login_required
 def settings(student_id):
     
     s = Student.query.get_or_404(student_id)
